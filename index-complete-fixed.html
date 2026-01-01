@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The League in a Box | BOW Sports Capital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 30%, #1e293b 60%, #0f172a 100%);
+            color: #f8fafc;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* INTRO SCREEN */
+        .intro-content {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 10vh;
+        }
+
+        .logo-area {
+            margin-bottom: 3rem;
+        }
+
+        .bow-logo {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            color: #eab308;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .track-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .main-title {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        .main-title .line1 {
+            display: block;
+        }
+
+        .main-title .line2 {
+            display: block;
+            background: linear-gradient(135deg, #eab308 0%, #fbbf24 50%, #eab308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.75rem;
+            color: #94a3b8;
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 4rem;
+        }
+
+        .philosophy-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 4px solid #eab308;
+            padding: 2.5rem;
+            margin: 4rem 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .philosophy-box p {
+            font-size: 1.35rem;
+            line-height: 1.9;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .philosophy-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .primary-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            background: #eab308;
+            color: #0f172a;
+            border: none;
+            padding: 1.25rem 3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(234, 179, 8, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .primary-btn:hover {
+            background: #fbbf24;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(234, 179, 8, 0.5);
+        }
+
+        /* BUILDER SCREEN */
+        .builder-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .builder-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            color: #eab308;
+            margin-bottom: 1rem;
+        }
+
+        .builder-subtitle {
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .levers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .lever-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lever-card:nth-child(1) { animation-delay: 0.05s; }
+        .lever-card:nth-child(2) { animation-delay: 0.1s; }
+        .lever-card:nth-child(3) { animation-delay: 0.15s; }
+        .lever-card:nth-child(4) { animation-delay: 0.2s; }
+        .lever-card:nth-child(5) { animation-delay: 0.25s; }
+        .lever-card:nth-child(6) { animation-delay: 0.3s; }
+        .lever-card:nth-child(7) { animation-delay: 0.35s; }
+        .lever-card:nth-child(8) { animation-delay: 0.4s; }
+        .lever-card:nth-child(9) { animation-delay: 0.45s; }
+        .lever-card:nth-child(10) { animation-delay: 0.5s; }
+
+        .lever-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(234, 179, 8, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(234, 179, 8, 0.1);
+        }
+
+        .lever-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .lever-number {
+            width: 36px;
+            height: 36px;
+            background: #eab308;
+            color: #0f172a;
+            border-radius: 50%;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .lever-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: rgba(234, 179, 8, 0.95);
+            margin-bottom: 0.75rem;
+        }
+
+        .lever-description {
+            font-size: 1rem;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .slider-container {
+            margin-top: 2rem;
+        }
+
+        .slider-input {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, rgba(234, 179, 8, 0.3) 0%, rgba(234, 179, 8, 0.6) 50%, rgba(234, 179, 8, 0.3) 100%);
+            outline: none;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #eab308 0%, #fbbf24 100%);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid #0f172a;
+            box-shadow: 0 0 12px rgba(234, 179, 8, 0.6), 0 0 24px rgba(234, 179, 8, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.8), 0 0 40px rgba(234, 179, 8, 0.4);
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #eab308 0%, #fbbf24 100%);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid #0f172a;
+            box-shadow: 0 0 12px rgba(234, 179, 8, 0.6), 0 0 24px rgba(234, 179, 8, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .slider-input::-moz-range-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.8), 0 0 40px rgba(234, 179, 8, 0.4);
+        }
+
+        .slider-labels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label {
+            text-align: center;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .slider-label.active {
+            color: #eab308;
+            font-weight: 600;
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .slider-tooltip {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-style: italic;
+            line-height: 1.6;
+            min-height: 3.5rem;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 6px;
+        }
+
+        .builder-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        .secondary-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            padding: 1rem 2.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .secondary-btn:hover {
+            border-color: #eab308;
+            color: #eab308;
+            background: rgba(234, 179, 8, 0.05);
+        }
+
+        /* RATIFICATION SCREEN */
+        .ratification-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 5vh;
+        }
+
+        .seal-container {
+            margin-bottom: 3rem;
+        }
+
+        .league-seal {
+            width: 140px;
+            height: 140px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 4px solid #eab308;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 40px rgba(234, 179, 8, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 40px rgba(234, 179, 8, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 60px rgba(234, 179, 8, 0.6);
+            }
+        }
+
+        .ratification-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            color: #eab308;
+            margin-bottom: 3rem;
+        }
+
+        .ratification-summary {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .ratification-summary p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .impact-list {
+            list-style: none;
+            margin: 2rem 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .impact-list li {
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid rgba(234, 179, 8, 0.5);
+            background: rgba(15, 23, 42, 0.4);
+            color: #cbd5e1;
+            text-align: left;
+            border-radius: 4px;
+        }
+
+        .ratification-warning {
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .ratification-warning p {
+            color: #eab308;
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .ratification-warning p:last-child {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .analyzing {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0f172a;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* IDENTITY SCREEN */
+        .identity-reveal {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 5vh;
+        }
+
+        .reveal-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        .identity-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 4rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 0 60px rgba(234, 179, 8, 0.3), 0 20px 80px rgba(0, 0, 0, 0.5);
+            animation: cardReveal 0.8s ease-out;
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .identity-name {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            color: #eab308;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .identity-summary {
+            font-size: 1.4rem;
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .identity-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .identity-section {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: left;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .identity-section h4 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .identity-section.priorities h4 {
+            color: #eab308;
+        }
+
+        .identity-section.sacrifices h4 {
+            color: #64748b;
+        }
+
+        .identity-section ul {
+            list-style: none;
+        }
+
+        .identity-section li {
+            padding: 0.75rem 0 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border-left: 2px solid;
+        }
+
+        .priorities li {
+            color: #cbd5e1;
+            border-color: rgba(234, 179, 8, 0.5);
+        }
+
+        .sacrifices li {
+            color: #94a3b8;
+            border-color: rgba(100, 116, 139, 0.5);
+        }
+
+        /* STAKEHOLDERS SCREEN */
+        .stakeholders-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .stakeholders-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            color: #eab308;
+            margin-bottom: 1rem;
+        }
+
+        .stakeholders-subtitle {
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .stakeholders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 5rem;
+        }
+
+        .stakeholder-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        .stakeholder-card:nth-child(1) { animation-delay: 0.1s; }
+        .stakeholder-card:nth-child(2) { animation-delay: 0.2s; }
+        .stakeholder-card:nth-child(3) { animation-delay: 0.3s; }
+        .stakeholder-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .stakeholder-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eab308;
+        }
+
+        .stakeholder-icon {
+            font-size: 2.5rem;
+        }
+
+        .stakeholder-name {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #eab308;
+        }
+
+        .stakeholder-impacts {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .impact-item h5 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+
+        .impact-item p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .reflection-prompt {
+            margin-top: 5rem;
+        }
+
+        .reflection-box {
+            background: rgba(234, 179, 8, 0.08);
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 4rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(234, 179, 8, 0.2);
+        }
+
+        .reflection-box h3 {
+            font-size: 2.5rem;
+            color: #eab308;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .reflection-question {
+            font-size: 1.75rem;
+            font-style: italic;
+            color: #f8fafc;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .reflection-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .levers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stakeholders-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .identity-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .philosophy-box,
+            .identity-card,
+            .reflection-box {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        const app = {
+            currentScreen: 'intro',
+            levers: {},
+            identity: null,
+            impacts: null
+        };
+
+        const LEVERS_CONFIG = [
+            {
+                id: 'salary_cap',
+                title: 'Wage Constraint Architecture',
+                description: 'The fundamental mechanism governing payroll flexibility and competitive spending dynamics.',
+                options: [
+                    { value: 0, label: 'Unrestricted Market', tooltip: 'No ceiling on total compensation. Economic stratification determines competitive advantage. (MLB pre-luxury tax era)' },
+                    { value: 1, label: 'Flexible Ceiling with Penalties', tooltip: 'Permeable spending threshold with progressive financial penalties. Enables strategic overspend. (NBA soft cap model)' },
+                    { value: 2, label: 'Absolute Expenditure Ceiling', tooltip: 'Non-negotiable payroll maximum. Forces strict resource allocation discipline. (NFL hard cap)' }
+                ]
+            },
+            {
+                id: 'revenue_sharing',
+                title: 'Interclub Revenue Redistribution',
+                description: 'The degree to which high-revenue franchises subsidize smaller-market operations.',
+                options: [
+                    { value: 0, label: 'Minimal Redistribution', tooltip: 'Franchises retain local earnings. Market size directly correlates with financial capacity.' },
+                    { value: 1, label: 'Balanced Pooling', tooltip: 'Strategic revenue sharing to stabilize smaller markets without eliminating incentive structures.' },
+                    { value: 2, label: 'Aggressive Equalization', tooltip: 'Substantial collective redistribution. Small-market viability prioritized over market efficiency.' }
+                ]
+            },
+            {
+                id: 'luxury_tax',
+                title: 'Progressive Spending Penalties',
+                description: 'The punitive framework applied to franchises exceeding designated payroll thresholds.',
+                options: [
+                    { value: 0, label: 'No Penalty Framework', tooltip: 'High-revenue clubs operate without spending constraints. Wealth translates directly to roster quality.' },
+                    { value: 1, label: 'Nominal Deterrent', tooltip: 'Financial penalties exist but remain tolerable for affluent ownership groups.' },
+                    { value: 2, label: 'Escalating Prohibitive Tax', tooltip: 'Exponential penalties designed to prevent sustained luxury spending. (NBA repeater tax)' }
+                ]
+            },
+            {
+                id: 'contract_limits',
+                title: 'Player Contract Duration Parameters',
+                description: 'Maximum commitment length and guarantee structures governing player-team agreements.',
+                options: [
+                    { value: 0, label: 'Restricted Duration', tooltip: 'Short-term maximums preserve franchise flexibility. Players assume career risk. (NBA 4-5 year maxes)' },
+                    { value: 1, label: 'Moderate Commitment Window', tooltip: 'Balanced approach: sufficient security for players, manageable exposure for clubs.' },
+                    { value: 2, label: 'Extended Guaranteed Tenure', tooltip: 'Long-term fully guaranteed contracts. Players secured, franchises absorb performance risk. (MLB 10+ year deals)' }
+                ]
+            },
+            {
+                id: 'draft_order',
+                title: 'Amateur Selection Priority Mechanism',
+                description: 'The algorithm determining competitive advantage distribution through talent acquisition.',
+                options: [
+                    { value: 0, label: 'Inverse Standing Order', tooltip: 'Systematic reward for competitive failure. Creates perverse incentive structures. (Traditional worst-to-first)' },
+                    { value: 1, label: 'Weighted Probability System', tooltip: 'Stochastic allocation favoring weaker teams while mitigating deliberate underperformance.' },
+                    { value: 2, label: 'Equalized Probability Distribution', tooltip: 'Flattened odds among non-playoff teams. Minimizes tanking incentive. (NBA reformed lottery)' }
+                ]
+            },
+            {
+                id: 'rookie_scale',
+                title: 'Entry-Level Compensation Structure',
+                description: 'The regulatory framework governing first-contract player economic extraction.',
+                options: [
+                    { value: 0, label: 'Rigid Slotting Protocol', tooltip: 'Non-negotiable predetermined salaries. Maximum cost-control, minimal player leverage. (NFL rookie scale)' },
+                    { value: 1, label: 'Bounded Negotiation Range', tooltip: 'Structured framework with flexibility margins. Balanced value capture between labor and ownership.' },
+                    { value: 2, label: 'Open Market Valuation', tooltip: 'Unrestricted rookie negotiations. Risk of over-investment in unproven talent. (Pre-1990s NFL)' }
+                ]
+            },
+            {
+                id: 'expansion',
+                title: 'Franchise Growth Trajectory',
+                description: 'The strategic approach to league enlargement and territorial market penetration.',
+                options: [
+                    { value: 0, label: 'Accelerated Expansion', tooltip: 'Prioritize expansion fee capture and geographic footprint. Accept near-term talent dilution.' },
+                    { value: 1, label: 'Methodical Growth', tooltip: 'Strategic, measured expansion balancing revenue opportunities with competitive integrity.' },
+                    { value: 2, label: 'Closed System', tooltip: 'Zero new franchises. Maximize scarcity premium and franchise valuation.' }
+                ]
+            },
+            {
+                id: 'revenue_source',
+                title: 'Revenue Origination Model',
+                description: 'The primary revenue streams determining franchise economic stratification.',
+                options: [
+                    { value: 0, label: 'Localized Revenue Dependence', tooltip: 'Gate receipts and regional broadcasting dominate. Market size determines economic capacity. (MLB model)' },
+                    { value: 1, label: 'Hybrid Revenue Architecture', tooltip: 'Balanced national and local streams. Market advantage exists but is moderated.' },
+                    { value: 2, label: 'Centralized Revenue Dominance', tooltip: 'National media deals dwarf local earnings. Market size largely neutralized. (NFL model)' }
+                ]
+            },
+            {
+                id: 'player_mobility',
+                title: 'Labor Mobility Constraints',
+                description: 'The regulatory framework governing player agency over career destination.',
+                options: [
+                    { value: 0, label: 'Extended Franchise Control', tooltip: 'Prolonged team rights, restricted free agency. Players acquire leverage late in prime years.' },
+                    { value: 1, label: 'Balanced Tenure Requirements', tooltip: 'Reasonable service time before unrestricted agency. Players prove value before gaining mobility.' },
+                    { value: 2, label: 'Accelerated Free Agency', tooltip: 'Early player autonomy. Stars select destinations, competitive balance suffers.' }
+                ]
+            },
+            {
+                id: 'enforcement',
+                title: 'Competitive Integrity Governance',
+                description: 'The league office\'s interventionist philosophy regarding competitive manipulation.',
+                options: [
+                    { value: 0, label: 'Laissez-Faire Framework', tooltip: 'Minimal intervention. Trust market forces and franchise self-regulation.' },
+                    { value: 1, label: 'Light-Touch Oversight', tooltip: 'Monitor behaviors, intervene sparingly. Preserve franchise autonomy while maintaining guardrails.' },
+                    { value: 2, label: 'Proactive Enforcement Regime', tooltip: 'Aggressive penalties for tanking, tampering, and collusion. Active integrity protection.' }
+                ]
+            }
+        ];
+
+        const LEAGUE_ARCHETYPES = {
+            owner_optimized: {
+                name: 'Owner-Optimized Cartel',
+                summary: 'A league designed to maximize ownership profitability, minimize exposure to market volatility, and maintain asymmetric control over labor costs through coordinated restraint mechanisms.',
+                priorities: [
+                    'Predictable profit margins immunized from competitive outcomes',
+                    'Coordinated wage suppression through structural labor constraints',
+                    'Limited competitive volatility that threatens franchise stability',
+                    'Maximum franchise valuation appreciation through scarcity preservation'
+                ],
+                sacrifices: [
+                    'Player earning potential and long-term career security',
+                    'Fan access to sustained competitive excellence',
+                    'Market-driven competitive resource allocation',
+                    'Organic star power development and retention'
+                ]
+            },
+            parity_first: {
+                name: 'Parity-Engineered Competitive League',
+                summary: 'A league architected for maximum competitive balance where structural mechanisms systematically prevent sustained excellence and ensure cyclical competitiveness across all franchise markets.',
+                priorities: [
+                    'Year-to-year outcome unpredictability and competitive churn',
+                    'Small-market franchise viability and sustainable operations',
+                    'Dynasty prevention through roster disruption mechanisms',
+                    'Strategic management primacy over financial resource advantage'
+                ],
+                sacrifices: [
+                    'Superteam formation and elite talent concentration',
+                    'Player autonomy in destination selection and career control',
+                    'Market-size competitive advantages and natural stratification',
+                    'Long-term roster continuity and organizational identity'
+                ]
+            },
+            star_driven: {
+                name: 'Star-Driven Entertainment Oligopoly',
+                summary: 'A league that prioritizes marquee player empowerment, elite talent concentration in major markets, and entertainment spectacle over competitive balance or labor cost containment.',
+                priorities: [
+                    'Marquee player empowerment and destination control',
+                    'Major market showcase platforms for elite talent',
+                    'Superteam narrative construction and dynasty storylines',
+                    'Individual player brand development and commercial leverage'
+                ],
+                sacrifices: [
+                    'Small-market competitive viability and sustained relevance',
+                    'Year-to-year competitive unpredictability and parity',
+                    'Predictable playoff race outcomes and seasonal drama',
+                    'Team identity continuity and organizational loyalty norms'
+                ]
+            },
+            growth_focused: {
+                name: 'Expansionist Revenue Maximization League',
+                summary: 'A league optimized for aggressive territorial expansion, new market penetration, and short-term revenue capture through expansion fees at the expense of competitive product quality.',
+                priorities: [
+                    'Expansion fee revenue extraction from new ownership groups',
+                    'Aggressive geographic market penetration and footprint growth',
+                    'Franchise valuation acceleration through scarcity dilution',
+                    'National brand expansion and multi-market presence'
+                ],
+                sacrifices: [
+                    'Playing talent depth and overall competitive product quality',
+                    'Competitive integrity during expansion-driven dilution periods',
+                    'Existing market stability and established franchise value',
+                    'Long-term strategic planning and sustainable growth models'
+                ]
+            },
+            player_empowered: {
+                name: 'Labor-Empowered Partnership League',
+                summary: 'A league where organized labor has secured significant economic power, career mobility, and revenue participation at the direct expense of ownership profit margins and franchise planning flexibility.',
+                priorities: [
+                    'Maximum player salary capture and revenue sharing',
+                    'Accelerated free agency and early career autonomy',
+                    'Long-term contract security and guaranteed compensation',
+                    'Individual player leverage and destination control'
+                ],
+                sacrifices: [
+                    'Owner profit margins and return on franchise investment',
+                    'Team roster planning flexibility and long-term strategy',
+                    'Small-market franchise economic sustainability',
+                    'Predictable cost structures and budget management'
+                ]
+            },
+            traditional_stability: {
+                name: 'Institutional Preservation League',
+                summary: 'A league that values historical continuity, local market primacy, institutional identity, and gradual evolutionary change over aggressive revenue maximization or modern labor flexibility.',
+                priorities: [
+                    'Long-term franchise institutional stability and continuity',
+                    'Local market economic primacy and regional identity',
+                    'Historical preservation and traditional operational norms',
+                    'Gradual, conservative evolutionary change over disruption'
+                ],
+                sacrifices: [
+                    'National revenue maximization through centralized media deals',
+                    'Aggressive growth opportunities and expansion fee capture',
+                    'Small-market competitive parity and structural balance',
+                    'Modern labor market flexibility and player mobility norms'
+                ]
+            }
+        };
+
+        // Initialize levers to middle position
+        LEVERS_CONFIG.forEach(lever => {
+            app.levers[lever.id] = 1;
+        });
+
+        function calculateProfile(levers) {
+            const profile = {
+                owner_control: 0,
+                player_power: 0,
+                parity_focus: 0,
+                growth_priority: 0,
+                market_freedom: 0,
+                stability_focus: 0
+            };
+
+            if (levers.salary_cap === 2) { profile.owner_control += 2; profile.parity_focus += 2; }
+            else if (levers.salary_cap === 1) { profile.parity_focus += 1; }
+            else { profile.market_freedom += 2; profile.player_power += 1; }
+
+            if (levers.revenue_sharing === 2) { profile.parity_focus += 2; profile.owner_control += 1; }
+            else if (levers.revenue_sharing === 1) { profile.stability_focus += 1; }
+            else { profile.market_freedom += 2; }
+
+            if (levers.luxury_tax === 2) { profile.parity_focus += 2; profile.owner_control += 1; }
+            else if (levers.luxury_tax === 1) { profile.market_freedom += 1; }
+            else { profile.market_freedom += 2; }
+
+            if (levers.contract_limits === 2) { profile.player_power += 2; profile.owner_control -= 1; }
+            else if (levers.contract_limits === 0) { profile.owner_control += 2; }
+            else { profile.stability_focus += 1; }
+
+            if (levers.draft_order === 2) { profile.parity_focus -= 1; }
+            else if (levers.draft_order === 1) { profile.parity_focus += 1; }
+            else { profile.parity_focus += 2; }
+
+            if (levers.rookie_scale === 0) { profile.owner_control += 2; }
+            else if (levers.rookie_scale === 2) { profile.player_power += 2; }
+
+            if (levers.expansion === 0) { profile.growth_priority += 3; }
+            else if (levers.expansion === 2) { profile.stability_focus += 2; }
+
+            if (levers.revenue_source === 2) { profile.parity_focus += 2; }
+            else if (levers.revenue_source === 0) { profile.market_freedom += 2; }
+
+            if (levers.player_mobility === 2) { profile.player_power += 2; profile.market_freedom += 1; }
+            else if (levers.player_mobility === 0) { profile.owner_control += 2; }
+
+            if (levers.enforcement === 2) { profile.parity_focus += 1; profile.owner_control += 1; }
+            else if (levers.enforcement === 0) { profile.market_freedom += 1; }
+
+            return profile;
+        }
+
+        function determineArchetype(profile) {
+            const scores = {
+                owner_optimized: profile.owner_control * 2 - profile.player_power,
+                parity_first: profile.parity_focus * 2 + profile.owner_control,
+                star_driven: profile.market_freedom * 2 + profile.player_power,
+                growth_focused: profile.growth_priority * 3,
+                player_empowered: profile.player_power * 3 - profile.owner_control,
+                traditional_stability: profile.stability_focus * 2 + (5 - profile.growth_priority)
+            };
+
+            let selected = 'parity_first';
+            let maxScore = scores.parity_first;
+
+            for (let key in scores) {
+                if (scores[key] > maxScore) {
+                    maxScore = scores[key];
+                    selected = key;
+                }
+            }
+
+            return LEAGUE_ARCHETYPES[selected];
+        }
+
+        function calculateImpacts(levers, profile) {
+            return {
+                owners: {
+                    profit: levers.revenue_sharing === 2 && levers.salary_cap === 2 ? 'low' : 
+                           levers.revenue_sharing === 0 && levers.salary_cap === 0 ? 'high' : 'moderate',
+                    insulation: profile.parity_focus >= 6 ? 'high' : profile.market_freedom >= 6 ? 'low' : 'moderate',
+                    risk: levers.contract_limits === 2 ? 'high' : levers.contract_limits === 0 ? 'low' : 'moderate'
+                },
+                players: {
+                    salary: profile.player_power >= 5 ? 'high' : profile.owner_control >= 5 ? 'low' : 'moderate',
+                    security: levers.contract_limits === 2 ? 'high' : levers.contract_limits === 0 ? 'low' : 'moderate',
+                    leverage: levers.player_mobility === 2 ? 'early' : levers.player_mobility === 0 ? 'late' : 'balanced'
+                },
+                teams: {
+                    flexibility: levers.salary_cap === 0 ? 'high' : levers.salary_cap === 2 ? 'low' : 'moderate',
+                    rebuild: levers.draft_order === 0 ? 'high' : levers.draft_order === 2 ? 'low' : 'moderate',
+                    freedom: profile.market_freedom >= 6 ? 'high' : profile.parity_focus >= 6 ? 'low' : 'moderate'
+                },
+                fans: {
+                    parity: profile.parity_focus >= 6 ? 'high' : profile.market_freedom >= 6 ? 'low' : 'moderate',
+                    predictability: profile.market_freedom >= 6 ? 'high' : profile.parity_focus >= 6 ? 'low' : 'moderate',
+                    engagement: profile.parity_focus >= 5 ? 'high' : profile.market_freedom >= 6 ? 'low' : 'moderate'
+                }
+            };
+        }
+
+        const impactDescriptions = {
+            owners: {
+                profit: {
+                    high: 'Substantial revenue volatility driven by performance variance and market dynamics. Competitive outcomes directly affect profitability.',
+                    moderate: 'Moderate earnings fluctuation buffered by revenue-sharing mechanisms and league-wide financial structures.',
+                    low: 'Stable, predictable profit margins systematically insulated from competitive performance outcomes.'
+                },
+                insulation: {
+                    high: 'Comprehensive protection from competitive disadvantages through salary constraints, revenue redistribution, and parity mechanisms.',
+                    moderate: 'Competitive balance framework with residual advantages for superior management and strategic execution.',
+                    low: 'Market forces and economic capacity dominate. Large markets and sophisticated operators achieve systematic advantages.'
+                },
+                risk: {
+                    high: 'Significant exposure to long-term contract obligations, market volatility, and strategic miscalculation.',
+                    moderate: 'Manageable risk profile with structural escape mechanisms and league-wide safety protocols.',
+                    low: 'Minimal downside exposure. Governance architecture protects against catastrophic decision consequences.'
+                }
+            },
+            players: {
+                salary: {
+                    high: 'Maximum compensation potential with minimal structural constraints on individual and collective earnings.',
+                    moderate: 'Competitive compensation within regulatory frameworks balancing player and ownership interests.',
+                    low: 'Substantial constraints on contract values, prolonged team control, and limited individual negotiating leverage.'
+                },
+                security: {
+                    high: 'Extended guaranteed contracts, comprehensive injury protections, and minimal risk of unilateral termination.',
+                    moderate: 'Balanced security framework with partial guarantees and protections against arbitrary contract voidance.',
+                    low: 'Short-term contracts, limited guarantee structures, high vulnerability to performance decline and injury.'
+                },
+                leverage: {
+                    early: 'Accelerated free agency enables players to secure market-rate compensation and destination control during prime earning years.',
+                    balanced: 'Reasonable service requirements before unrestricted agency. Players demonstrate value before acquiring full mobility.',
+                    late: 'Extended franchise control mechanisms delay player leverage acquisition until late in prime competitive window.'
+                }
+            },
+            teams: {
+                flexibility: {
+                    high: 'Maximum strategic freedom to construct, pivot, and respond to opportunities without structural constraint.',
+                    moderate: 'Reasonable operational latitude within competitive balance frameworks and league-wide governance protocols.',
+                    low: 'Severe constraints imposed by hard salary restrictions, punitive penalties, and limited strategic optionality.'
+                },
+                rebuild: {
+                    high: 'Clear pathway from competitive failure to contention through systematic tanking, draft capital accumulation, and development.',
+                    moderate: 'Rebuild viability exists but requires extended timelines and more sophisticated strategic execution.',
+                    low: 'Difficult rebuild trajectory. Flattened lottery mechanisms and parity structures reduce rewards for competitive failure.'
+                },
+                freedom: {
+                    high: 'Franchises can pursue divergent strategic approaches: aggressive spending, patient development, or star acquisition.',
+                    moderate: 'Strategic variety exists within guardrails preventing extreme approaches or systematic exploitation.',
+                    low: 'Restrictive governance architecture forces franchises into homogeneous strategic templates and approaches.'
+                }
+            },
+            fans: {
+                parity: {
+                    high: 'Universal competitive viability. No permanent underclass. Sustained excellence systematically prevented.',
+                    moderate: 'Cyclical competitiveness. Dominance periods balanced by structural rebuild windows and regression mechanisms.',
+                    low: 'Persistent competitive stratification. Market and resource advantages create permanent tiers and limited small-market viability.'
+                },
+                predictability: {
+                    high: 'Outcomes largely predictable based on spending capacity, market advantages, and resource allocation.',
+                    moderate: 'Regular upsets and surprises within generally logical competitive hierarchies and expectations.',
+                    low: 'Substantial outcome volatility. Strategic management and execution can overcome resource disadvantages.'
+                },
+                engagement: {
+                    high: 'Sustained multi-generational fan investment driven by competitive hope, parity mechanisms, and institutional stability.',
+                    moderate: 'Engagement correlates with franchise success cycles, market position, and competitive windows.',
+                    low: 'Only supporters of successful franchises or star-driven markets maintain deep long-term investment.'
+                }
+            }
+        };
+
+        function render() {
+            const appDiv = document.getElementById('app');
+            
+            if (app.currentScreen === 'intro') {
+                appDiv.innerHTML = `
+                    <div class="screen active">
+                        <div class="container">
+                            <div class="intro-content">
+                                <div class="logo-area">
+                                    <div class="bow-logo">BOW SPORTS CAPITAL</div>
+                                    <div class="track-badge">TRACK 101 CAPSTONE</div>
+                                </div>
+                                
+                                <h1 class="main-title">
+                                    <span class="line1">THE LEAGUE</span>
+                                    <span class="line2">IN A BOX</span>
+                                </h1>
+                                
+                                <p class="tagline">Build the rules. Discover who they really serve.</p>
+                                
+                                <div class="philosophy-box">
+                                    <p>Every major sports league is a designed system.</p>
+                                    <p>Revenue, power, risk, and fairness do not distribute themselves — they are chosen.</p>
+                                </div>
+                                
+                                <button class="primary-btn" onclick="goToBuilder()">
+                                    Build Your League
+                                    <span>→</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (app.currentScreen === 'builder') {
+                let leversHTML = '';
+                LEVERS_CONFIG.forEach((lever, idx) => {
+                    const currentValue = app.levers[lever.id];
+                    leversHTML += `
+                        <div class="lever-card">
+                            <div class="lever-header">
+                                <div class="lever-number">${idx + 1}</div>
+                                <div>
+                                    <div class="lever-title">${lever.title}</div>
+                                    <div class="lever-description">${lever.description}</div>
+                                </div>
+                            </div>
+                            <div class="slider-container">
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="2" 
+                                    step="1" 
+                                    value="${currentValue}" 
+                                    class="slider-input"
+                                    oninput="updateLever('${lever.id}', parseInt(this.value))"
+                                >
+                                <div class="slider-labels">
+                                    ${lever.options.map((opt, i) => `
+                                        <div class="slider-label ${currentValue === i ? 'active' : ''}">${opt.label}</div>
+                                    `).join('')}
+                                </div>
+                                <div class="slider-tooltip">${lever.options[currentValue].tooltip}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                appDiv.innerHTML = `
+                    <div class="screen active">
+                        <div class="container">
+                            <div class="builder-header">
+                                <h2>League Governance Architecture</h2>
+                                <p class="builder-subtitle">Configure the fundamental mechanisms governing stakeholder power distribution</p>
+                            </div>
+                            <div class="levers-grid">
+                                ${leversHTML}
+                            </div>
+                            <div class="builder-actions">
+                                <button class="secondary-btn" onclick="resetLevers()">
+                                    ↻ Reset Configuration
+                                </button>
+                                <button class="primary-btn" onclick="goToRatification()">
+                                    Ratify League Rules →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (app.currentScreen === 'ratification') {
+                appDiv.innerHTML = `
+                    <div class="screen active">
+                        <div class="container">
+                            <div class="ratification-content">
+                                <div class="seal-container">
+                                    <div class="league-seal">⚖</div>
+                                </div>
+                                
+                                <h2 class="ratification-title">League Ratification Protocol</h2>
+                                
+                                <div class="ratification-summary">
+                                    <p>You have configured ten fundamental governance mechanisms.</p>
+                                    <p>These structural parameters will determine:</p>
+                                    <ul class="impact-list">
+                                        <li>Ownership profitability exposure and risk allocation</li>
+                                        <li>Player compensation ceilings and career security frameworks</li>
+                                        <li>Franchise competitive strategy constraints and freedoms</li>
+                                        <li>Fan engagement sustainability and competitive balance outcomes</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="ratification-warning">
+                                    <p>Once ratified, these governance structures become binding.</p>
+                                    <p>All stakeholder constituencies will operate within these constraints.</p>
+                                </div>
+                                
+                                <button class="primary-btn" onclick="ratifyLeague()" id="ratify-btn">
+                                    Ratify & Reveal League Typology →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (app.currentScreen === 'identity') {
+                appDiv.innerHTML = `
+                    <div class="screen active">
+                        <div class="container">
+                            <div class="identity-reveal">
+                                <p class="reveal-label">Your League Typology</p>
+                                
+                                <div class="identity-card">
+                                    <h2 class="identity-name">${app.identity.name}</h2>
+                                    <p class="identity-summary">${app.identity.summary}</p>
+                                    
+                                    <div class="identity-sections">
+                                        <div class="identity-section priorities">
+                                            <h4>Structural Priorities</h4>
+                                            <ul>
+                                                ${app.identity.priorities.map(p => `<li>${p}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="identity-section sacrifices">
+                                            <h4>Structural Sacrifices</h4>
+                                            <ul>
+                                                ${app.identity.sacrifices.map(s => `<li>${s}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="primary-btn" onclick="goToStakeholders()">
+                                    View Stakeholder Impact Analysis →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (app.currentScreen === 'stakeholders') {
+                const stakeholders = [
+                    { key: 'owners', icon: '💼', name: 'Ownership Class', metrics: ['profit', 'insulation', 'risk'] },
+                    { key: 'players', icon: '⚡', name: 'Labor Force', metrics: ['salary', 'security', 'leverage'] },
+                    { key: 'teams', icon: '🏆', name: 'Franchise Operations', metrics: ['flexibility', 'rebuild', 'freedom'] },
+                    { key: 'fans', icon: '🎯', name: 'Consumer Base', metrics: ['parity', 'predictability', 'engagement'] }
+                ];
+
+                let stakeholdersHTML = '';
+                stakeholders.forEach(sh => {
+                    let metricsHTML = '';
+                    sh.metrics.forEach(metric => {
+                        const level = app.impacts[sh.key][metric];
+                        const desc = impactDescriptions[sh.key][metric][level];
+                        metricsHTML += `
+                            <div class="impact-item">
+                                <h5>${metric.charAt(0).toUpperCase() + metric.slice(1)}</h5>
+                                <p>${desc}</p>
+                            </div>
+                        `;
+                    });
+
+                    stakeholdersHTML += `
+                        <div class="stakeholder-card">
+                            <div class="stakeholder-header">
+                                <div class="stakeholder-icon">${sh.icon}</div>
+                                <h3 class="stakeholder-name">${sh.name}</h3>
+                            </div>
+                            <div class="stakeholder-impacts">
+                                ${metricsHTML}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                appDiv.innerHTML = `
+                    <div class="screen active">
+                        <div class="container">
+                            <div class="stakeholders-header">
+                                <h2>Stakeholder Consequence Matrix</h2>
+                                <p class="stakeholders-subtitle">How your governance architecture affects each constituency</p>
+                            </div>
+                            
+                            <div class="stakeholders-grid">
+                                ${stakeholdersHTML}
+                            </div>
+                            
+                            <div class="reflection-prompt">
+                                <div class="reflection-box">
+                                    <h3>Critical Reflection</h3>
+                                    <p class="reflection-question">"If you had to operate within this governance framework for 20 years — as a consumer, laborer, or capital owner — would you still ratify it?"</p>
+                                    <div class="reflection-actions">
+                                        <button class="secondary-btn" onclick="restart()">
+                                            Design Alternative Architecture
+                                        </button>
+                                        <button class="secondary-btn" onclick="share()">
+                                            ⎋ Share Configuration
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function goToBuilder() {
+            app.currentScreen = 'builder';
+            render();
+        }
+
+        function updateLever(leverId, value) {
+            app.levers[leverId] = value;
+            
+            // Only update the specific slider's labels and tooltip, not the whole screen
+            const leverConfig = LEVERS_CONFIG.find(l => l.id === leverId);
+            const leverCard = event.target.closest('.lever-card');
+            
+            // Update active label
+            const labels = leverCard.querySelectorAll('.slider-label');
+            labels.forEach((label, idx) => {
+                if (idx === value) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            });
+            
+            // Update tooltip
+            const tooltip = leverCard.querySelector('.slider-tooltip');
+            tooltip.textContent = leverConfig.options[value].tooltip;
+        }
+
+        function resetLevers() {
+            LEVERS_CONFIG.forEach(lever => {
+                app.levers[lever.id] = 1;
+            });
+            render();
+        }
+
+        function goToRatification() {
+            app.currentScreen = 'ratification';
+            render();
+        }
+
+        function ratifyLeague() {
+            const btn = document.getElementById('ratify-btn');
+            btn.innerHTML = '<span class="spinner"></span> Analyzing Governance Architecture...';
+            btn.classList.add('analyzing');
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const profile = calculateProfile(app.levers);
+                app.identity = determineArchetype(profile);
+                app.impacts = calculateImpacts(app.levers, profile);
+                app.currentScreen = 'identity';
+                render();
+            }, 2200);
+        }
+
+        function goToStakeholders() {
+            app.currentScreen = 'stakeholders';
+            render();
+        }
+
+        function restart() {
+            app.currentScreen = 'intro';
+            app.identity = null;
+            app.impacts = null;
+            LEVERS_CONFIG.forEach(lever => {
+                app.levers[lever.id] = 1;
+            });
+            render();
+        }
+
+        function share() {
+            const text = `I designed a ${app.identity.name} in The League in a Box!\n\nCheck out BOW Sports Capital's Track 101.`;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('League typology copied to clipboard!');
+                });
+            } else {
+                alert(text);
+            }
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
